@@ -1,0 +1,19 @@
+[project]
+name = "xal_chatbot"
+authors = [{ name = "XAL Finance" }]
+description = "An accountant chatbot inside ERPNext: invoices, payments, balances and reports from plain English or Somali."
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    # Only used when the brain is set to "Claude"; the OpenAI-compatible brain needs nothing extra.
+    "anthropic",
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.frappe-dependencies]
+frappe = ">=16.0.0,<17.0.0"
+erpnext = ">=16.0.0,<17.0.0"

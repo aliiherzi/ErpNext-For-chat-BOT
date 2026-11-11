@@ -1,48 +1,92 @@
-# ERPNext for Chat BOT
+# XAL Accountant Bot
 
-The business ERP for **Chat BOT**, built on the shared ERPNext system in
-[`aliiherzi/erpnext-system`](https://github.com/aliiherzi/erpnext-system), with the XAL Desk look.
-It follows the steps in `prompts/new-erp-like-rays.md` from that repo.
+A chatbot inside ERPNext that works like an accountant. A manager writes what happened in
+plain English or Somali ("I sold 2 books to Ahmed for 5 dollars each"), the bot prepares the
+document, shows it, and saves it only after Confirm.
 
-This repo holds **only what is special to this business**. The Docker stack, images and prompts
-stay in `erpnext-system`.
+![The chat box](docs/images/chat.png)
 
-## Where it goes on your PC
+- **`HANDOFF.md`** - the plan, every decision, what is built and what is not. Read this first.
+- **`docs/TESTING.md`** - what was tested, what was not, and how to repeat the tests.
 
-```
-C:\Users\hp\.claude\ErpNext System\        <- erpnext-system
-  frappe_docker\                           <- Docker stack (pwd.yml)
-  xal_desk\                                <- Xalfinance/xal-desk
-  RAYS CLEANING\                           <- the finished example
-  CHAT BOT\                                <- THIS repo
-```
+It is a Frappe app (`xal_chatbot`) for ERPNext v16. The Docker stack it runs on is in
+[`aliiherzi/erpnext-system`](https://github.com/aliiherzi/erpnext-system).
 
-```powershell
-cd "C:\Users\hp\.claude\ErpNext System"
-git clone https://github.com/aliiherzi/ErpNext-For-chat-BOT.git "CHAT BOT"
-```
+## What it does (version 0.1)
 
-Then add `/CHAT BOT/` to the `.gitignore` of `erpnext-system`, the same way `/RAYS CLEANING/` is listed.
-
-## Folders
-
-| Path | What goes there |
+| You write | The bot |
 |---|---|
-| `HANDOFF.md` | The answers to the business questions, then what was built, users, roles, open questions |
-| `users/` | One Python script per user: roles, menu (`kit.menu`), home page (`kit.home`) |
-| `scripts/` | Business-wide scripts: brand (`kit.brand`), roles, Overview pages (`kit.overview`) |
-| `branding/` | Logo (square PNG) and other images |
-| `LOCAL-PASSWORDS.txt` | Users' passwords. **On your PC only**, never committed |
+| "I sold 2 books to Ahmed for $5 each" | Prepares a sales invoice, shows it, saves it on Confirm, gives Open and PDF buttons |
+| "... and he paid cash" | Also records the payment against that invoice |
+| "Ahmed paid me 4 dollars" | Prepares a payment that settles his oldest unpaid invoices first |
+| "How much does Ahmed owe?" | Balance and unpaid invoices |
+| "Who owes me money?" | Receivables, by customer |
+| "Profit and loss this month" | Income, expenses, net profit |
+| "Send me the PDF of ACC-SINV-2026-00012" | A PDF button |
 
-Each script starts with a comment saying what was asked and the date, and can be run again
-(it updates, it never makes duplicates). Run them inside the backend container:
+Purchases, journal entries, the Balance Sheet, Excel and WhatsApp are not built yet (see `HANDOFF.md`).
 
-```powershell
-docker compose -p erpnext -f frappe_docker/pwd.yml exec backend bench --site <site> execute ...
+## Continue on another computer
+
+```bash
+git clone https://github.com/aliiherzi/ErpNext-For-chat-BOT.git
 ```
 
-## Rules
-- Never change what Administrator sees.
-- Never delete anything: hide or pause instead.
-- No test records on the business site: use the demo site.
-- Create users one by one and check each one.
+Everything is in the repository: code, plan, decisions and tests. Passwords and API keys are
+never in it; they are typed into ERPNext on each installation.
+
+## Install
+
+Try it on a demo or test site first. Make a backup before installing on a site with real books.
+
+**1. Build an image with the bot** (from the root of this repository). `BASE` is the image your
+stack runs now; in `erpnext-system` that is `erpnext-rays:v16.52.0`.
+
+```bash
+docker build -f docker/chatbot.Containerfile --build-arg BASE=erpnext-rays:v16.52.0 -t erpnext-rays-chatbot:v16.52.0 .
+```
+
+**2. Use that image.** Back up `frappe_docker/pwd.yml`, replace `erpnext-rays:v16.52.0` with
+`erpnext-rays-chatbot:v16.52.0` on every service, then:
+
+```bash
+docker compose -p erpnext -f pwd.yml up -d
+```
+
+**3. Install the app on the site** (once per site):
+
+```bash
+docker compose -p erpnext -f pwd.yml exec backend bench --site frontend install-app xal_chatbot
+```
+
+**4. Set it up in ERPNext** as Administrator:
+
+1. Open **Chatbot Settings**: tick Enabled, choose the provider and model, type the API key,
+   choose the company and (if you want) the customer to use when none is named.
+2. Give the role **Accountant Bot User** to each user who should see the chat. The role only
+   opens the chat; what the bot can do for a user comes from their normal ERPNext roles.
+3. Each payment method the bot should use (Cash, EVC Plus, bank...) needs an account for the
+   company in **Mode of Payment**.
+4. Log in as that user: the chat button is at the bottom right.
+
+### The brain
+
+| Provider | Base URL | Model | Notes |
+|---|---|---|---|
+| OpenAI-compatible | `https://openrouter.ai/api/v1` | `google/gemma-4-26b-a4b-it:free` | Free, for testing. Daily limits; prompts may be kept by the provider. |
+| Claude | (not used) | `claude-haiku-5-5` | For real books. Paid per use. |
+| OpenAI-compatible | `http://your-server:11434/v1` | your model | A model you host yourself (Ollama etc.). |
+
+## Layout
+
+```
+xal_chatbot/
+  api.py            what the chat box calls: send, confirm, cancel, reset
+  tools.py          what the AI may do (look-ups, and "prepare" which saves nothing)
+  actions.py        saving after Confirm
+  brain/            the replaceable AI: openai_compatible.py, claude.py, the instructions
+  public/           the chat box (js, css)
+  xal_chatbot/doctype/   Chatbot Settings, Chatbot Action, Chatbot Log
+docker/chatbot.Containerfile
+dev/                test site data, a scripted stand-in AI, the test flows
+```
