@@ -1,5 +1,5 @@
 """Test-site setup: company, a customer, an item, payment method account, a bot user.
-Run with: bench --site frontend execute xal_chatbot_devsetup.run  (copied into the container)"""
+Run by dev/start-demo.sh. Never run it on a site with real books."""
 
 import frappe
 
@@ -53,9 +53,10 @@ def run():
 			u.add_roles(*roles)
 	s = frappe.get_doc("Chatbot Settings")
 	s.enabled = 1
-	s.provider = "OpenAI-compatible"
-	s.base_url = "http://127.0.0.1:9000/v1"
-	s.model = "mock"
+	if not s.get_password("api_key", raise_exception=False):  # keep a real brain if the tester set one
+		s.provider = "OpenAI-compatible"
+		s.base_url = "http://127.0.0.1:9000/v1"
+		s.model = "mock"
 	s.default_company = "Test Books"
 	s.default_customer = "Walk-in Customer"
 	s.save()

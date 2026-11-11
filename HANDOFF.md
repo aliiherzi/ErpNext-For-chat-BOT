@@ -38,6 +38,7 @@ The Frappe app `xal_chatbot` in this repository.
 | Audit | DocTypes **Chatbot Action**, **Chatbot Log** | Every summary shown for confirmation and what became of it; every message, reply and look-up. |
 | Role | **Accountant Bot User** | Lets a user open the chat. Gives no accounting rights by itself. |
 | Image | `docker/chatbot.Containerfile` | ERPNext image with the app inside. |
+| Demo | `dev/start-demo.sh`, `.devcontainer/` | A throw-away ERPNext with the bot and test data, for GitHub Codespaces or a PC with Docker (`docs/DEMO.md`). |
 
 ### How the safety works
 

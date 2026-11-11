@@ -35,6 +35,11 @@ git clone https://github.com/aliiherzi/ErpNext-For-chat-BOT.git
 Everything is in the repository: code, plan, decisions and tests. Passwords and API keys are
 never in it; they are typed into ERPNext on each installation.
 
+## Try it without installing
+
+A throw-away demo with test data runs in GitHub Codespaces or on any PC with Docker:
+see **`docs/DEMO.md`**.
+
 ## Install
 
 Try it on a demo or test site first. Make a backup before installing on a site with real books.
@@ -88,5 +93,6 @@ xal_chatbot/
   public/           the chat box (js, css)
   xal_chatbot/doctype/   Chatbot Settings, Chatbot Action, Chatbot Log
 docker/chatbot.Containerfile
-dev/                test site data, a scripted stand-in AI, the test flows
+dev/                the demo (start-demo.sh, compose.yml), test data, a scripted stand-in AI, the test flows
+.devcontainer/      starts the demo in GitHub Codespaces
 ```

@@ -34,6 +34,7 @@ a payment with no invoice named did not settle the customer's invoices.
 
 ## Not tested
 
+- The demo inside GitHub Codespaces itself. `dev/start-demo.sh` was run from scratch on another Linux machine with Docker, but not in a Codespace.
 - A real AI model: neither Gemma on OpenRouter nor Claude was called. The Claude brain was only
   run as far as the network call.
 - Somali and English understanding, and how often a real model picks the wrong customer or amount.
