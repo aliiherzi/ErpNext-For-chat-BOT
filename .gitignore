@@ -1,0 +1,23 @@
+# Passwords: kept on your PC only, never on GitHub
+LOCAL-PASSWORDS.txt
+*.key
+.env
+.env.*
+!.env.example
+
+# Site backups hold the full database and site keys: never on GitHub
+/backups/
+*.sql
+*.sql.gz
+*.tar
+site_config*.json
+
+# Junk
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Test screenshots
+/dev/shots/
