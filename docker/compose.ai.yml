@@ -1,0 +1,15 @@
+# Use the ERPNext + AI Accountant image for every ERPNext service in frappe_docker's pwd.yml.
+#   docker compose -p erpnext -f <frappe_docker>/pwd.yml -f docker/compose.ai.yml up -d
+x-ai-image: &ai-image
+  image: erpnext-ai:latest
+  pull_policy: never
+
+services:
+  backend: *ai-image
+  configurator: *ai-image
+  create-site: *ai-image
+  frontend: *ai-image
+  queue-long: *ai-image
+  queue-short: *ai-image
+  scheduler: *ai-image
+  websocket: *ai-image

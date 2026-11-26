@@ -1,0 +1,18 @@
+[project]
+name = "ai_accountant"
+description = "AI accountant chatbot for ERPNext, powered by Claude"
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+dynamic = ["version"]
+dependencies = [
+    "anthropic~=2.12",
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.frappe-dependencies]
+frappe = ">=16.0.0,<17.0.0"
+erpnext = ">=16.0.0,<17.0.0"

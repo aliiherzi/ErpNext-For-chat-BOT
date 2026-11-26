@@ -1,0 +1,10 @@
+# ERPNext v16.60.0 + HRMS v16.60.0 for Apple Silicon (the official HRMS image is amd64 only)
+FROM frappe/erpnext:v16.60.0
+USER frappe
+WORKDIR /home/frappe/frappe-bench
+# sites/ is a volume in the base image, so build through a temporary assets link.
+RUN ln -sfn /home/frappe/frappe-bench/assets sites/assets \
+ && bench get-app --branch v16.60.0 --skip-assets hrms https://github.com/frappe/hrms \
+ && bench build --app hrms \
+ && rm -rf apps/hrms/.git apps/hrms/node_modules apps/hrms/frontend/node_modules apps/hrms/roster/node_modules \
+ && rm -f sites/assets

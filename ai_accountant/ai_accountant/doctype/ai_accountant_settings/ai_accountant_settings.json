@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "creation": "2026-11-22 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "provider",
+  "column_break_1",
+  "section_claude",
+  "api_key",
+  "model",
+  "effort",
+  "section_openrouter",
+  "openrouter_api_key",
+  "openrouter_model",
+  "section_instructions",
+  "extra_instructions"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "description": "Create one at console.anthropic.com. Stored encrypted.",
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "Anthropic API Key",
+   "length": 255
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "claude-opus-5-5",
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "label": "Claude Model"
+  },
+  {
+   "default": "medium",
+   "description": "Higher = more careful answers, slower and more expensive.",
+   "fieldname": "effort",
+   "fieldtype": "Select",
+   "label": "Effort",
+   "options": "low\nmedium\nhigh"
+  },
+  {
+   "fieldname": "section_instructions",
+   "fieldtype": "Section Break",
+   "label": "Your Instructions"
+  },
+  {
+   "description": "Extra rules for the accountant, e.g. your accounting practices, tone, or language to answer in.",
+   "fieldname": "extra_instructions",
+   "fieldtype": "Small Text",
+   "label": "Extra Instructions"
+  },
+  {
+   "default": "Claude (Anthropic)",
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "label": "AI Provider",
+   "options": "Claude (Anthropic)\nOpenRouter (free test models)",
+   "description": "Use OpenRouter's free models for testing, Claude for real work."
+  },
+  {
+   "fieldname": "section_claude",
+   "fieldtype": "Section Break",
+   "label": "Claude",
+   "depends_on": "eval:doc.provider=='Claude (Anthropic)'"
+  },
+  {
+   "fieldname": "section_openrouter",
+   "fieldtype": "Section Break",
+   "label": "OpenRouter",
+   "depends_on": "eval:doc.provider=='OpenRouter (free test models)'"
+  },
+  {
+   "fieldname": "openrouter_api_key",
+   "fieldtype": "Password",
+   "label": "OpenRouter API Key",
+   "length": 255,
+   "description": "Create one at openrouter.ai/settings/keys. Stored encrypted."
+  },
+  {
+   "default": "google/gemma-4-31b-it:free",
+   "fieldname": "openrouter_model",
+   "fieldtype": "Data",
+   "label": "OpenRouter Model",
+   "description": "Free models end in :free and must support tools."
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-11-27 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AI Accountant",
+ "name": "AI Accountant Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
