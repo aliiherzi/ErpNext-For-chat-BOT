@@ -72,3 +72,12 @@ Then hard-refresh the browser (Cmd/Ctrl+Shift+R).
   rebuilding, write rules in *Extra Instructions* on the settings page.
 - **Add a skill:** add an entry to `TOOLS` and a function to `_HANDLERS` in `ai_accountant/tools.py`.
 - **Allow drafting more document types:** add them to `DRAFTABLE_DOCTYPES`.
+
+## Travel agency system on http://localhost:8081
+Uses the private `aliiherzi/TRAVEL-SYSTEM` repo. Clone it next to this one, then (after the steps above):
+```bash
+docker build -f docker/travel.Containerfile -t erpnext-local:latest ../TRAVEL-SYSTEM
+docker compose -p erpnext -f ../erpnext-docker/pwd.yml -f docker/compose.travel.yml up -d
+docker exec erpnext-backend-1 bash -c 'ls -1 apps > sites/apps.txt; bench new-site travel.localhost --mariadb-user-host-login-scope="%" --admin-password=admin --db-root-username=root --db-root-password=admin --install-app erpnext --install-app travel_agency; bench --site travel.localhost migrate'
+```
+`compose.travel.yml` also keeps the 8080 site running, so use it in place of `compose.ai.yml` from then on.
